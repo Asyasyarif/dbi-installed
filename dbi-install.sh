@@ -18,12 +18,18 @@ BACKEND="${DBI_BACKEND:-$HOME/Downloads/dbibackend}"
 
 # No arguments = current folder. For double-click use dbi-install.command,
 # which passes the folder it sits in to this script.
-shopt -s nullglob nocaseglob
 targets=()
+# Folders are scanned recursively for .nsp/.nsz/.xci/.xcz
+collect() {
+  while IFS= read -r f; do targets+=("$f"); done < <(
+    find "$1" -type f \( -iname '*.nsp' -o -iname '*.nsz' -o -iname '*.xci' -o -iname '*.xcz' \) | sort
+  )
+}
+
 if [ "$#" -gt 0 ]; then
   for a in "$@"; do
     if [ -d "$a" ]; then
-      for f in "$a"/*.nsp "$a"/*.nsz "$a"/*.xci "$a"/*.xcz; do targets+=("$f"); done
+      collect "$a"
     elif [ -f "$a" ]; then
       targets+=("$a")
     else
@@ -31,7 +37,7 @@ if [ "$#" -gt 0 ]; then
     fi
   done
 else
-  for f in *.nsp *.nsz *.xci *.xcz; do targets+=("$f"); done
+  collect .
 fi
 
 if [ "${#targets[@]}" -eq 0 ]; then
@@ -40,9 +46,9 @@ if [ "${#targets[@]}" -eq 0 ]; then
 fi
 
 pgrep -q OpenMTP && echo "OpenMTP is running - close it first, it fights over the same USB device." >&2
-pgrep -qf "dbibackend" && echo "Another dbibackend server is running - stop it first: pkill -f dbibackend" >&2
+pgrep -qf "python.*dbibackend" && echo "Another dbibackend server is running - stop it first: pkill -f dbibackend" >&2
 
-echo "Folder : $(pwd)"
+[ "$#" -gt 0 ] || echo "Folder : $(pwd)"
 echo "Sending: ${#targets[@]} file(s)"
 printf '  - %s\n' "${targets[@]##*/}"
 echo "Switch : DBI > Install title from DBIbackend (Y button)"

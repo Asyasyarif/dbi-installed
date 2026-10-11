@@ -29,10 +29,12 @@ the `dbibackend` script, and a global `dbi-install` command in `~/.local/bin`.
 3. On the Mac:
 
 ```bash
-dbi-install                      # every .nsp in the current folder
-dbi-install ~/Games/MarioKart    # everything inside a specific folder
+dbi-install                      # every .nsp in the current folder (recursive)
+dbi-install ~/Games/MarioKart    # everything inside a folder (recursive)
 dbi-install game.nsp update.nsp  # specific files
 ```
+
+Folders are scanned recursively, so a folder full of game folders works in one shot.
 
 4. On the Switch: press **X** to select packages → **A** → choose **Install target** (SD / NAND) →
    **Start install**
