@@ -1,3 +1,3 @@
 #!/bin/bash
-# Taruh file ini di folder yang isinya NSP, lalu double-click untuk kirim ke Switch.
+# Put this file in a folder full of NSP files, then double-click it to send them to the Switch.
 exec "$HOME/.local/bin/dbi-install" "$(dirname "$0")"

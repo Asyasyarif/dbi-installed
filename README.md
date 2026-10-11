@@ -1,16 +1,17 @@
 # dbi-installed
 
-Kirim file game (`.nsp` / `.nsz` / `.xci` / `.xcz`) dari Mac ke Nintendo Switch lewat kabel USB,
-pakai metode **DBIbackend** — DBI membaca paketnya langsung, jadi file besar (>4 GB) tidak pernah
-ditulis ke SD card FAT32 dan tidak perlu di-split.
+Send game files (`.nsp` / `.nsz` / `.xci` / `.xcz`) from a Mac to a Nintendo Switch over a USB cable
+using the **DBIbackend** method. DBI reads the package directly, so large files (>4 GB) are never
+written to the FAT32 SD card and never need to be split.
 
-## Kenapa bukan MTP?
+## Why not MTP?
 
-MTP (OpenMTP / Android File Transfer) sering putus di macOS baru dan tetap kena batas 4 GB FAT32
-kalau file ditempel ke SD card. Metode ini pakai protokol DBI sendiri: transfer langsung ke installer,
-lalu game dipasang ke SD atau NAND sesuai pilihan di layar Switch.
+MTP (OpenMTP / Android File Transfer) tends to drop the connection on recent macOS versions, and
+copying the file to the SD card still hits the 4 GB FAT32 limit. This method uses DBI's own protocol:
+the data streams straight into the installer, and the game is installed to SD or NAND depending on
+what you pick on the Switch.
 
-## Instalasi
+## Install
 
 ```bash
 git clone https://github.com/Asyasyarif/dbi-installed.git
@@ -18,35 +19,36 @@ cd dbi-installed
 ./install.sh
 ```
 
-`install.sh` menyiapkan semuanya: `libusb`, `python-tk`, venv `~/.venvs/dbi` + `pyusb`,
-script `dbibackend`, dan perintah global `dbi-install` di `~/.local/bin`.
+`install.sh` sets up everything: `libusb`, `python-tk`, the `~/.venvs/dbi` venv with `pyusb`,
+the `dbibackend` script, and a global `dbi-install` command in `~/.local/bin`.
 
-## Pakai
+## Usage
 
-1. Switch: **DBI → Install title from DBIbackend** (tombol **Y**)
-2. Colok kabel USB-C ke Mac
-3. Di Mac:
+1. On the Switch: **DBI → Install title from DBIbackend** (**Y** button)
+2. Plug the USB-C cable into the Mac
+3. On the Mac:
 
 ```bash
-dbi-install                      # semua .nsp di folder sekarang
-dbi-install ~/Games/MarioKart    # isi folder tertentu
-dbi-install game.nsp update.nsp  # file tertentu
+dbi-install                      # every .nsp in the current folder
+dbi-install ~/Games/MarioKart    # everything inside a specific folder
+dbi-install game.nsp update.nsp  # specific files
 ```
 
-4. Di Switch: tekan **X** untuk menandai paket → **A** → pilih **Install target** (SD / NAND) →
+4. On the Switch: press **X** to select packages → **A** → choose **Install target** (SD / NAND) →
    **Start install**
 
-### Dari Finder (double-click)
+### From Finder (double-click)
 
-Copy `dbi-install.command` ke folder berisi NSP, lalu double-click — otomatis kirim semua isi folder itu:
+Copy `dbi-install.command` into a folder of NSP files and double-click it — it sends everything in
+that folder:
 
 ```bash
-cp dbi-install.command "/path/folder-game/"
+cp dbi-install.command "/path/to/game-folder/"
 ```
 
-## Catatan
+## Notes
 
-- Tutup **OpenMTP** sebelum menjalankan — dua-duanya memakai device USB yang sama.
-- Jangan cabut kabel selama transfer.
-- Override lokasi kalau perlu: `DBI_PYTHON=... DBI_BACKEND=... dbi-install`
-- `dbibackend` © [rashevskyv/dbi](https://github.com/rashevskyv/dbi) (diunduh otomatis oleh `install.sh`).
+- Close **OpenMTP** before running; both use the same USB device.
+- Do not unplug the cable while a transfer is running.
+- Override locations if needed: `DBI_PYTHON=... DBI_BACKEND=... dbi-install`
+- `dbibackend` © [rashevskyv/dbi](https://github.com/rashevskyv/dbi) (downloaded automatically by `install.sh`).

@@ -1,22 +1,23 @@
 #!/bin/bash
-# dbi-install — kirim NSP/NSZ/XCI/XCZ ke Switch lewat kabel USB (metode DBIbackend).
+# dbi-install — send NSP/NSZ/XCI/XCZ files to a Nintendo Switch over USB (DBIbackend method).
 #
-#   dbi-install                   kirim semua .nsp di folder sekarang
-#   dbi-install ~/Games/Mario     kirim isi folder itu
-#   dbi-install a.nsp b.nsp       kirim file tertentu
+#   dbi-install                   send every .nsp/.xci in the current folder
+#   dbi-install ~/Games/Mario     send everything in that folder
+#   dbi-install a.nsp b.nsp       send specific files
 #
-# Sebelum jalan: Switch > DBI > "Install title from DBIbackend" (tombol Y), lalu colok kabel USB.
+# Before running: on the Switch, open DBI > "Install title from DBIbackend" (Y button),
+# then plug in the USB-C cable.
 
 set -u
 
 PY="${DBI_PYTHON:-$HOME/.venvs/dbi/bin/python}"
 BACKEND="${DBI_BACKEND:-$HOME/Downloads/dbibackend}"
 
-[ -x "$PY" ] || { echo "venv tidak ada: $PY  -> jalankan ./install.sh" >&2; exit 1; }
-[ -f "$BACKEND" ] || { echo "dbibackend tidak ada: $BACKEND  -> jalankan ./install.sh" >&2; exit 1; }
+[ -x "$PY" ] || { echo "venv not found: $PY  -> run ./install.sh" >&2; exit 1; }
+[ -f "$BACKEND" ] || { echo "dbibackend not found: $BACKEND  -> run ./install.sh" >&2; exit 1; }
 
-# Tanpa argumen = folder sekarang. Untuk double-click pakai dbi-install.command
-# (dia yang mengirim folder tempatnya berada ke script ini).
+# No arguments = current folder. For double-click use dbi-install.command,
+# which passes the folder it sits in to this script.
 shopt -s nullglob nocaseglob
 targets=()
 if [ "$#" -gt 0 ]; then
@@ -26,7 +27,7 @@ if [ "$#" -gt 0 ]; then
     elif [ -f "$a" ]; then
       targets+=("$a")
     else
-      echo "dilewati (tidak ada): $a" >&2
+      echo "skipped (not found): $a" >&2
     fi
   done
 else
@@ -34,16 +35,16 @@ else
 fi
 
 if [ "${#targets[@]}" -eq 0 ]; then
-  echo "Tidak ada file .nsp/.nsz/.xci/.xcz di: ${*:-$(pwd)}" >&2
+  echo "No .nsp/.nsz/.xci/.xcz files in: ${*:-$(pwd)}" >&2
   exit 1
 fi
 
-pgrep -q OpenMTP && echo "OpenMTP sedang jalan — tutup dulu, nanti rebutan device USB." >&2
-pgrep -qf "dbibackend" && echo "Server dbibackend lain sedang jalan — matikan dulu: pkill -f dbibackend" >&2
+pgrep -q OpenMTP && echo "OpenMTP is running - close it first, it fights over the same USB device." >&2
+pgrep -qf "dbibackend" && echo "Another dbibackend server is running - stop it first: pkill -f dbibackend" >&2
 
 echo "Folder : $(pwd)"
-echo "Kirim  : ${#targets[@]} file"
+echo "Sending: ${#targets[@]} file(s)"
 printf '  - %s\n' "${targets[@]##*/}"
-echo "Switch : DBI > Install title from DBIbackend (tombol Y)"
+echo "Switch : DBI > Install title from DBIbackend (Y button)"
 
 exec "$PY" "$BACKEND" "${targets[@]}"
