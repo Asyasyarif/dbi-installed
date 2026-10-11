@@ -22,10 +22,11 @@ echo "== 3/4 dbibackend ($BACKEND)"
 [ -s "$BACKEND" ] || curl -sL https://raw.githubusercontent.com/rashevskyv/dbi/main/dbibackend -o "$BACKEND"
 chmod +x "$BACKEND"
 
-echo "== 4/4 global command ($BIN/dbi-install)"
+echo "== 4/4 global command ($BIN/dbii)"
 mkdir -p "$BIN"
 chmod +x "$DIR/dbi-install.sh"
 ln -sf "$DIR/dbi-install.sh" "$BIN/dbi-install"
+ln -sf "$DIR/dbi-install.sh" "$BIN/dbii"
 
 case ":$PATH:" in
   *":$BIN:"*) ;;
@@ -36,4 +37,4 @@ case ":$PATH:" in
 esac
 
 echo
-echo "Done. Try: dbi-install --help 2>/dev/null || dbi-install"
+echo "Done. Try: dbii"

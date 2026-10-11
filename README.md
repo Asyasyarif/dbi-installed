@@ -20,7 +20,7 @@ cd dbi-installed
 ```
 
 `install.sh` sets up everything: `libusb`, `python-tk`, the `~/.venvs/dbi` venv with `pyusb`,
-the `dbibackend` script, and a global `dbi-install` command in `~/.local/bin`.
+the `dbibackend` script, and the global commands `dbii` (short) and `dbi-install` in `~/.local/bin`.
 
 ## Usage
 
@@ -29,10 +29,12 @@ the `dbibackend` script, and a global `dbi-install` command in `~/.local/bin`.
 3. On the Mac:
 
 ```bash
-dbi-install                      # every .nsp in the current folder (recursive)
-dbi-install ~/Games/MarioKart    # everything inside a folder (recursive)
-dbi-install game.nsp update.nsp  # specific files
+dbii                             # every .nsp in the current folder (recursive)
+dbii ~/Games/MarioKart           # everything inside a folder (recursive)
+dbii game.nsp update.nsp         # specific files
 ```
+
+`dbi-install` works exactly the same if you prefer the long name.
 
 Folders are scanned recursively, so a folder full of game folders works in one shot.
 
@@ -52,5 +54,5 @@ cp dbi-install.command "/path/to/game-folder/"
 
 - Close **OpenMTP** before running; both use the same USB device.
 - Do not unplug the cable while a transfer is running.
-- Override locations if needed: `DBI_PYTHON=... DBI_BACKEND=... dbi-install`
+- Override locations if needed: `DBI_PYTHON=... DBI_BACKEND=... dbii`
 - `dbibackend` © [rashevskyv/dbi](https://github.com/rashevskyv/dbi) (downloaded automatically by `install.sh`).
